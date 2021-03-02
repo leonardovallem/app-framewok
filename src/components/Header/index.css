@@ -1,0 +1,8 @@
+.tabbar {
+  background: var(--background-dark) !important;
+  backdrop-filter: blur(5px);
+}
+
+.tabbar span {
+  color: white;
+}
