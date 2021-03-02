@@ -52,7 +52,7 @@ export default function Menu() {
           component={Link}
           to="/albuns"
         >
-          Albúns
+          Álbuns
         </Button>
 
         <Button
@@ -62,7 +62,7 @@ export default function Menu() {
           component={Link}
           to="/todos"
         >
-          To-Do
+          To-Dos
         </Button>
       </div>
       <Typography align="center" variant="body1" className="footer">

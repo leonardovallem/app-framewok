@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   gridList: {
-    width: 500,
     height: 450,
   },
 }))
@@ -22,6 +21,16 @@ const useStyles = makeStyles((theme) => ({
 export default function Album({ id, data }) {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
+  const [clientWidth, setClientWidth] = React.useState(window.innerWidth)
+
+  function updateScreenSize() {
+    setClientWidth(window.innerWidth)
+  }
+
+  React.useEffect(() => {
+    updateScreenSize()
+    window.addEventListener("resize", updateScreenSize)
+  }, [])
 
   function handleClickOpen() {
     setOpen(true)
@@ -30,9 +39,6 @@ export default function Album({ id, data }) {
   function handleClose() {
     setOpen(false)
   }
-
-  React.useEffect(() => {
-  }, [])
 
   return (
     <>
@@ -50,7 +56,7 @@ export default function Album({ id, data }) {
           {id}
         </DialogTitle>
         <DialogContent>
-          <GridList cellHeight={160} className={classes.gridList} cols={3}>
+          <GridList cellHeight={160} className={classes.gridList} cols={clientWidth >= 600 ? 3 : 2}>
             {data?.filter((pic) => String(pic.albumId) === String(id))?.map((pic) => (
               <GridListTile key={pic.id} cols={1}>
                 <img src={pic.url} alt={pic.title} />

@@ -7,7 +7,7 @@ import Container from "../../components/Container"
 import Tabela from "../../components/Tabela"
 
 const campos = [
-  "Id do Aluno",
+  "Id do Usuário",
   "Id do Álbum",
   "Título",
   "Visualizar",

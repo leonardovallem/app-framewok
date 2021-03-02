@@ -7,7 +7,7 @@ import * as changeTab from "../../reducers/changeTab/actions"
 import Container from "../../components/Container"
 
 const campos = [
-  "Id do Aluno",
+  "Id do Usuário",
   "Id da Tarefa",
   "Título",
   "Realizado",
