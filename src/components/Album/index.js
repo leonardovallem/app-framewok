@@ -42,7 +42,7 @@ export default function Album({ id, data }) {
 
   return (
     <>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="outlined" onClick={handleClickOpen} color="secondary" style={{ alignSelf: "normal" }}>
         Abrir álbum
       </Button>
 

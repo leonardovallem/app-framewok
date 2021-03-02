@@ -1,8 +1,9 @@
 import React from 'react'
 import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles'
 import {
-  TablePagination, IconButton, Table, TableBody,
+  TablePagination, IconButton, Table, TableBody, Typography,
   TableCell, TableContainer, TableHead, TableRow, Paper,
+  TableFooter, ListItem, ListItemText, List, Divider,
 } from '@material-ui/core'
 import { KeyboardArrowRight, KeyboardArrowLeft } from "@material-ui/icons"
 import PropTypes from "prop-types"
@@ -86,16 +87,36 @@ TablePaginationActions.propTypes = {
   page: PropTypes.number.isRequired,
 }
 
+const cardStyles = makeStyles(() => ({
+  root: {
+    width: '95%',
+  },
+  card: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    backgroundColor: '#424242',
+    borderRadius: "0.3em",
+  },
+}))
+
 export default function Tabela({
   fields, dataValues, externalLink, data: albumData,
 }) {
   const classes = useStyles()
+  const cardClasses = cardStyles()
 
+  const [clientWidth, setClientWidth] = React.useState(window.innerWidth)
   const [rows, setRows] = React.useState([])
   const [page, setPage] = React.useState(0)
   const [count, setCount] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [renderedRows, setRenderedRows] = React.useState([[]])
+
+  function updateScreenSize() {
+    setClientWidth(window.innerWidth)
+  }
 
   function handleCount() {
     setCount(Math.ceil(rows.length / rowsPerPage))
@@ -141,10 +162,12 @@ export default function Tabela({
 
   React.useEffect(() => {
     divideRows()
+    updateScreenSize()
+    window.addEventListener("resize", updateScreenSize)
   }, [rowsPerPage])
 
-  return (
-    <>
+  function desktopRows() {
+    return (
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
@@ -167,19 +190,77 @@ export default function Tabela({
               </StyledTableRow>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                count={count}
+                page={page}
+                onChangePage={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+                labelDisplayedRows={({ from }) => `${from}-${from + rowsPerPage - 1} de ${rows.length}`}
+                labelRowsPerPage="Linhas por página"
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
+      </TableContainer>
+    )
+  }
+
+  function mobileRows() {
+    return (
+      <List className={cardClasses.root}>
+        {renderedRows[page]?.map((row) => (
+          <>
+            <ListItem key={row[fields[1]]} className={cardClasses.card}>
+              {fields.map((field) => (field === externalLink?.field ? (
+                <Album id={row[externalLink.reference]} data={albumData} style={{ float: "right" }} />
+              ) : (
+                <ListItemText
+                  key={field}
+                  secondary={(
+                    <>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        style={{ color: "white" }}
+                      >
+                        {field}
+                        {": "}
+                      </Typography>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        style={{ color: "#989898" }}
+                      >
+                        {row[field]}
+                      </Typography>
+                    </>
+                    )}
+                />
+              )))}
+            </ListItem>
+            <Divider key={row[fields[1] * Math.PI]} />
+          </>
+        ))}
         <TablePagination
           count={count}
           page={page}
           onChangePage={handleChangePage}
           rowsPerPage={rowsPerPage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
-          labelDisplayedRows={({ from }) => `${from}-${from + rowsPerPage - 1} de ${rows.length}`}
-          labelRowsPerPage="Linhas por página"
+          labelDisplayedRows={({ from }) => `${from}-${from + rowsPerPage - 1}/${rows.length}`}
+          labelRowsPerPage="Mostrar"
           ActionsComponent={TablePaginationActions}
         />
-      </TableContainer>
-    </>
+      </List>
+    )
+  }
+
+  return (
+    clientWidth > 780 ? desktopRows() : mobileRows()
   )
 }
 
