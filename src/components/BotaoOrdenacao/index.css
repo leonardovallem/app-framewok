@@ -1,0 +1,22 @@
+.filter-body {
+  margin: 2em !important;
+  padding: 2.2em;
+
+  max-width: 750px;
+  border: 2px #102A43 solid;
+  border-radius: 1.3em;
+}
+
+.filter-body > * {
+  margin: 0.5em 0 !important;
+}
+
+.btn-order {
+  background-color: #f3f3f3;
+  padding: 5px !important;
+  border-radius: 0.6em;
+}
+
+.field-name {
+  margin-top: 3px;
+}

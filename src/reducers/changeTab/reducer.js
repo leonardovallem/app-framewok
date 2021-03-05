@@ -19,6 +19,9 @@ export default function reducer(state = initialState, action) {
     case types.TAB_TODOS_SELECTED:
       newState.selectedTab = 3
       break
+    case types.NO_TAB_SELECTED:
+      newState.selectedTab = -1
+      break
     default:
   }
   return newState

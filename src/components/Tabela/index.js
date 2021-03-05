@@ -9,6 +9,7 @@ import { KeyboardArrowRight, KeyboardArrowLeft } from "@material-ui/icons"
 import PropTypes from "prop-types"
 
 import Album from "../Album"
+import BotaoOrdenacao from '../BotaoOrdenacao'
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -109,6 +110,7 @@ export default function Tabela({
 
   const [clientWidth, setClientWidth] = React.useState(window.innerWidth)
   const [rows, setRows] = React.useState([])
+  const [originalRows, setOriginalRows] = React.useState(rows)
   const [page, setPage] = React.useState(0)
   const [count, setCount] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -152,6 +154,65 @@ export default function Tabela({
       }
     }
     setRows(data)
+    setOriginalRows(data)
+    divideRows()
+  }
+
+  function handleSearch(query) {
+    if (query.length === 0) setRows(originalRows)
+    else {
+      const results = rows.filter((row) => row[fields[2]].includes(query))
+      setRows(results)
+    }
+
+    divideRows()
+  }
+
+  function handleSort(field) {
+    const temp = [...rows]
+
+    // Array.sort() é ordenação estável, portanto, algumas ordenações
+    // prévias garantem a ordenação em relação ao Id do Usuário mesmo
+    // que o criteŕio de ordenação seja outro
+
+    // manter sempre ordenado em relação ao Id do Usuario
+    if (field !== fields[0]) {
+      temp.sort((a, b) => {
+        const x = Number.parseInt(a[fields[0]], 10) || a[fields[0]]
+        const y = Number.parseInt(b[fields[0]], 10) || b[fields[0]]
+
+        let comparison = 0
+        if (x > y) comparison = 1
+        else if (x < y) comparison = -1
+        return comparison
+      })
+    }
+
+    // manter ordenado em relação ao Id das postagens
+    // caso a ordenação principal seja por Id do Usuário
+    if (field === fields[0]) {
+      temp.sort((a, b) => {
+        const x = Number.parseInt(a[fields[1]], 10) || a[fields[1]]
+        const y = Number.parseInt(b[fields[1]], 10) || b[fields[1]]
+
+        let comparison = 0
+        if (x > y) comparison = 1
+        else if (x < y) comparison = -1
+        return comparison
+      })
+    }
+
+    temp.sort((a, b) => {
+      const x = Number.parseInt(a[field], 10) || a[field]
+      const y = Number.parseInt(b[field], 10) || b[field]
+
+      let comparison = 0
+      if (x > y) comparison = 1
+      else if (x < y) comparison = -1
+      return comparison
+    })
+
+    setRows(temp)
     divideRows()
   }
 
@@ -260,7 +321,10 @@ export default function Tabela({
   }
 
   return (
-    clientWidth > 780 ? desktopRows() : mobileRows()
+    <>
+      <BotaoOrdenacao campos={fields} sort={handleSort} search={handleSearch} />
+      {clientWidth > 780 ? desktopRows() : mobileRows()}
+    </>
   )
 }
 

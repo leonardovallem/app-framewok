@@ -7,7 +7,7 @@ import "./index.css"
 export default function Container({ title, children }) {
   return (
     <MUIContainer className="container-box">
-      <Typography variant="h3">{title}</Typography>
+      <Typography variant="h3" align="center">{title}</Typography>
       {children}
     </MUIContainer>
   )

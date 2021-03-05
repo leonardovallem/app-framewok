@@ -23,3 +23,9 @@ export function selectTodos() {
     type: types.TAB_TODOS_SELECTED,
   }
 }
+
+export function selectNone() {
+  return {
+    type: types.NO_TAB_SELECTED,
+  }
+}

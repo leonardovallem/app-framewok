@@ -5,6 +5,7 @@ import Menu from "../pages/Menu"
 import Postagens from "../pages/Postagens"
 import Albuns from "../pages/Albuns"
 import Todos from "../pages/Todos"
+import NotFound from "../pages/NotFound"
 
 export default function Routes() {
   return (
@@ -13,6 +14,7 @@ export default function Routes() {
       <Route exact path="/postagens" component={Postagens} />
       <Route exact path="/albuns" component={Albuns} />
       <Route exact path="/todos" component={Todos} />
+      <Route path="*" component={NotFound} />
     </Switch>
   )
 }
